@@ -52,6 +52,9 @@ router.post('/register', (req, res) => {
 			});
 		}
 	})
+	.catch((err) => {
+		throw err;
+	});
 });
 
 module.exports = router;
