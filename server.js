@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const passport = require('passport');
 
 // My modules
 const users = require('./routes/api/users');
@@ -29,8 +29,9 @@ mongoose
 		console.log(err);
 	});
 
-
-app.get('/', (req, res) => res.send('Hello World!'));
+// passport middleware
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 // Use Routes
 app.use('/api/users', users);
