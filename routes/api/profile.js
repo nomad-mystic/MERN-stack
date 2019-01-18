@@ -6,6 +6,7 @@ const passport = require('passport');
 // My modules
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const validateProfileInput = require('../../validation/profile');
 
 // @route GET api/profile/test
 // @desc Tests profile route
@@ -41,27 +42,36 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
  * @access Private
  * @return {object} res
  */
-router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
-	const errors = {};
+router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
+	const {errors, isValid} = validateProfileInput(req.body);
+	console.log(req.body.facebook);
+	// Check Validation
+	if (!isValid) {
+		return res.status(400).json(errors);
+	}
 
 	// Get fields
 	const profileFields = {};
 	profileFields.user = req.user.id;
 
-	if (req.body.handle) profileFields.handle = req.body.handle;
-	if (req.body.company) profileFields.company = req.body.company;
-	if (req.body.website) profileFields.website = req.body.website;
-	if (req.body.location) profileFields.location = req.body.location;
-	if (req.body.status) profileFields.status = req.body.status;
-	if (req.body.bio) profileFields.bio = req.body.bio;
-	if (req.body.githubusername) profileFields.githubusername = req.body.githubusername;
+	if (req.body.handle) profileFields.handle = req.body.handle.toString().trim();
+	if (req.body.company) profileFields.company = req.body.company.toString().trim();
+	if (req.body.website) profileFields.website = req.body.website.toString().trim();
+	if (req.body.location) profileFields.location = req.body.location.toString().trim();
+	if (req.body.status) profileFields.status = req.body.status.toString().trim();
+	if (req.body.bio) profileFields.bio = req.body.bio.toString().trim();
+	if (req.body.githubusername) profileFields.githubusername = req.body.githubusername.toString().trim();
 
+	console.log(profileFields.website);
 	// Skills - Split into array
 	if (typeof req.body.skills !== 'undefined') {
-		profileFields.skills = req.body.skills.split(',');
+		// profileFields.skills = req.body.skills.split(',');
+		let splitArray = req.body.skills.split(',');
+		profileFields.skills = splitArray.map(Function.prototype.call, String.prototype.trim);
 	}
 
 	// social
+	profileFields.social = {};
 	if (req.body.youtube) profileFields.social.youtube = req.body.youtube;
 	if (req.body.twitter) profileFields.social.twitter = req.body.twitter;
 	if (req.body.facebook) profileFields.social.facebook = req.body.facebook;
