@@ -307,7 +307,7 @@ router.delete('/education/:edu_id', passport.authenticate('jwt', {session: false
 
 /**
  * @author Keith Murphy | nomadmystics@gmail.com
- * @route DELETE api/profile/education/:edu_id
+ * @route DELETE api/profile
  * @desc  Delete profile and user
  * @access Private
  * @return {object} res
