@@ -153,4 +153,66 @@ router.post('/unlike/:id', passport.authenticate('jwt', {session: false}), (req,
 		.catch(err => res.status(404).json({err: 'User not found'}));
 });
 
+/**
+ * @author Keith Murphy | nomadmystics@gmail.com
+ * @route POST api/posts/comment/:id
+ * @desc Comment on Post
+ * @access Private
+ * @return {object} res
+ */
+
+router.post('/comment/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
+	const { errors, isValid } = validatePostInput(req.body);
+
+	if (!isValid) {
+		return res.status(400).json(errors);
+	}
+
+	Post.findById(req.params.id)
+		.then(post => {
+			const newComment = {
+				text: req.body.text,
+				name: req.body.name,
+				avatar: req.body.avatar,
+				user: req.user.id,
+			};
+
+			post.comments.unshift(newComment);
+
+			post.save()
+				.then(post => res.status(200).json(post))
+				.catch(err => res.status(400).json({noPostFound: 'No Post Found'}));
+		})
+		.catch(err => res.status(404).json(err));
+});
+
+/**
+ * @author Keith Murphy | nomadmystics@gmail.com
+ * @route DELETE api/posts/comment/:id/:comment_id
+ * @desc Remove comment for post
+ * @access Private
+ * @return {object} res
+ */
+
+router.delete('/comment/:id/:comment_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+	Post.findById(req.params.id)
+		.then(post => {
+			// Check if the comment exists
+			if (post.comments.filter(comment => comment._id.toString() === req.params.comment_id).length === 0) {
+				return res.status(404).json({commentNotExists: 'Comment does not exist'});
+			}
+
+			// Get remove index
+			const removeIndex = post.comments
+				.map(item => item._id.toString())
+				.indexOf(req.params.comment_id);
+
+			// Remove from array
+			post.comments.splice(removeIndex, 1);
+
+			post.save().then(post => res.status(200).json(post)).catch(err => res.status(500).json(err));
+		})
+		.catch(err => res.status(404).json(err));
+});
+
 module.exports = router;
