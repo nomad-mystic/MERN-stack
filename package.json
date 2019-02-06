@@ -30,6 +30,7 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9",
     "prettier": "^1.15.3",
+    "react-templates": "^0.6.3",
     "sinon": "^7.2.3"
   }
 }
