@@ -2,7 +2,7 @@ img {
   width: 100%;
 }
 
-.landing {
+.Landing {
   position: relative;
   background: url('./img/showcase.jpg') no-repeat;
   background-size: cover;
