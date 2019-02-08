@@ -30,6 +30,7 @@ router.post('/register', (req, res) => {
 	// Check Validation
 	if (!isValid) {
 		console.log('testing isValid');
+		console.log(errors);
 		return res.status(400).json(errors);
 	}
 

@@ -30,12 +30,12 @@ module.exports = function validateRegisterInput(data) {
 		errors.email = emailEmptyValidationMessage;
 	}
 
-	if (Validator.isEmpty(data.password)) {
-		errors.password = passwordEmptyValidationMessage;
-	}
-
 	if (!Validator.isLength(data.password, {min: 6, max: 30})) {
 		errors.password = passwordLengthValidationMessage;
+	}
+
+	if (Validator.isEmpty(data.password)) {
+		errors.password = passwordEmptyValidationMessage;
 	}
 
 	if (Validator.isEmpty(data.passwordConfirm)) {
