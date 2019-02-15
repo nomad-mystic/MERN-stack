@@ -47,7 +47,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res) => {
  */
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 	const {errors, isValid} = validateProfileInput(req.body);
-	console.log(req.body.facebook);
+
 	// Check Validation
 	if (!isValid) {
 		return res.status(400).json(errors);
@@ -65,7 +65,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 	if (req.body.bio) profileFields.bio = req.body.bio.toString().trim();
 	if (req.body.githubusername) profileFields.githubusername = req.body.githubusername.toString().trim();
 
-	console.log(profileFields.website);
 	// Skills - Split into array
 	if (typeof req.body.skills !== 'undefined') {
 		// profileFields.skills = req.body.skills.split(',');
@@ -215,9 +214,6 @@ router.post('/experience', passport.authenticate('jwt', {session: false}), (req,
 
 			// Add to exp array
 			profile.experience.unshift(newExp);
-
-			console.log(profile);
-
 			profile.save().then(profile => res.json(profile)).catch(err => res.status(400).json({err}));
 		})
 		.catch(err => res.status(404))
