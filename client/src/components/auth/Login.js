@@ -1,4 +1,9 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+
+import {setCurrentUser} from "../../actions/authActions";
 
 class Login extends Component {
 
@@ -7,6 +12,7 @@ class Login extends Component {
 		this.state = {
 			email: '',
 			password: '',
+			errors: {},
 		};
 
 		this.onChange = this.onChange.bind(this);
@@ -25,7 +31,8 @@ class Login extends Component {
 			password: this.state.password,
 		};
 
-		console.log(user);
+		this.props.setCurrentUser(user);
+
 	}
 
 	render() {
@@ -67,4 +74,15 @@ class Login extends Component {
 	}
 }
 
-export default Login;
+Login.propTypes = {
+	setCurrentUser: PropTypes.func.isRequired,
+	auth: PropTypes.object.isRequired,
+	errors: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+	auth: state.auth,
+	errors: state.errors,
+});
+
+export default connect(mapStateToProps, {setCurrentUser})(withRouter(Login));
