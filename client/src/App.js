@@ -2,6 +2,9 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {Provider} from 'react-redux';
+import jwt_decode from 'jwt-decode';
+
+
 
 // redux
 import store from './store';
@@ -17,7 +20,15 @@ import Landing from './components/layout/Landing';
 // Auth
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import setAuthToken from './utils/setAuthToken';
+import {setCurrentUser} from "./actions/authActions";
 
+// Check for token on each page load
+if (localStorage.jwtToken) {
+	setAuthToken(localStorage.jwtToken);
+	const decoded = jwt_decode(localStorage.jwtToken);
+	store.dispatch(setCurrentUser(decoded));
+}
 
 /**
  * @author Keith Murphy | nomadmystics@gmail.com
